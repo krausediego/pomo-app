@@ -44,6 +44,41 @@ export interface Database {
           },
         ];
       };
+      projects: {
+        Row: {
+          created_at: string;
+          id: number;
+          project_color: string;
+          project_name: string;
+          updated_at: string | null;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: number;
+          project_color: string;
+          project_name: string;
+          updated_at?: string | null;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          project_color?: string;
+          project_name?: string;
+          updated_at?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'projects_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       tags: {
         Row: {
           created_at: string;

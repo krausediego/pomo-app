@@ -1,6 +1,6 @@
 import { supabase } from '@/infra/database';
 
-interface GetTagByIdProps {
+export interface GetTagByIdProps {
   id: string;
 }
 

@@ -3,29 +3,32 @@ import { SubmitHandler } from 'react-hook-form';
 
 import { TablesInsert } from '@/@types';
 import { useAuth } from '@/contexts';
-import { useGetTagByIdQuery, useUpdateTagMutation } from '@/hooks/manager';
+import {
+  useGetProjectByIdQuery,
+  useUpdateProjectMutation,
+} from '@/hooks/manager';
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { Flex, Skeleton } from 'native-base';
 
-import { FormTag } from './components/Form';
+import { FormProject } from './components/Form';
 
-const EditTagScreen: React.FC = () => {
+const EditProjectScreen: React.FC = () => {
   const [colorSelected, setColorSelected] = useState('');
 
   const { id } = useLocalSearchParams<{ id: string }>();
   const { session } = useAuth();
 
-  const { data, isPending: isLoadingGet } = useGetTagByIdQuery({ id });
-  const { mutateAsync, isPending } = useUpdateTagMutation();
+  const { data, isPending: isLoadingGet } = useGetProjectByIdQuery({ id });
+  const { mutateAsync, isPending } = useUpdateProjectMutation();
 
   const handleForm: SubmitHandler<
-    Pick<TablesInsert<'tags'>, 'tag_name'>
-  > = async ({ tag_name }): Promise<void> => {
+    Pick<TablesInsert<'projects'>, 'project_name'>
+  > = async ({ project_name }): Promise<void> => {
     try {
       await mutateAsync({
         id: Number(id),
-        tag_color: colorSelected,
-        tag_name,
+        project_color: colorSelected,
+        project_name,
         user_id: session?.user?.id as string,
       });
 
@@ -43,9 +46,9 @@ const EditTagScreen: React.FC = () => {
 
   return (
     <Flex flex={1} bg="white" justifyContent="space-between">
-      <Stack.Screen options={{ title: 'Editar tag' }} />
+      <Stack.Screen options={{ title: 'Editar projeto' }} />
 
-      <FormTag
+      <FormProject
         colorSelected={colorSelected}
         setColorSelected={setColorSelected}
         handleSubmitForm={handleForm}
@@ -56,4 +59,4 @@ const EditTagScreen: React.FC = () => {
   );
 };
 
-export default EditTagScreen;
+export default EditProjectScreen;

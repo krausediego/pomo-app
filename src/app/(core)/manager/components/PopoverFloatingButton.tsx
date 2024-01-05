@@ -2,6 +2,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { router } from 'expo-router';
 import {
   Divider,
+  HStack,
   Icon,
   IconButton,
   Popover,
@@ -49,10 +50,15 @@ export const PopoverFloatingButton: React.FC = () => {
             justifyContent="start"
             alignItems="center"
             variant="ghost"
-            gap={2}
-            colorScheme="light">
-            <Icon as={MaterialCommunityIcons} name="file-plus-outline" />
-            <Text>Tarefa</Text>
+            colorScheme="light"
+            onPress={() => {
+              onClose();
+              router.push('/manager/NewTask/');
+            }}>
+            <HStack space={2} alignItems="center">
+              <Icon as={MaterialCommunityIcons} name="file-plus-outline" />
+              <Text>Tarefa</Text>
+            </HStack>
           </Pressable>
           <Divider />
           <Pressable
@@ -61,11 +67,16 @@ export const PopoverFloatingButton: React.FC = () => {
             flexDirection="row"
             justifyContent="start"
             alignItems="center"
-            gap={2}
             colorScheme="light"
-            variant="ghost">
-            <Icon as={MaterialCommunityIcons} name="toolbox-outline" />
-            <Text>Projeto</Text>
+            variant="ghost"
+            onPress={() => {
+              onClose();
+              router.push('/manager/NewProject/');
+            }}>
+            <HStack space={2} alignItems="center">
+              <Icon as={MaterialCommunityIcons} name="toolbox-outline" />
+              <Text>Projeto</Text>
+            </HStack>
           </Pressable>
           <Divider />
           <Pressable
@@ -75,14 +86,15 @@ export const PopoverFloatingButton: React.FC = () => {
             justifyContent="start"
             alignItems="center"
             variant="ghost"
-            gap={2}
             colorScheme="light"
             onPress={() => {
               onClose();
               router.push('/manager/NewTag/');
             }}>
-            <Icon as={MaterialCommunityIcons} name="tag-outline" />
-            <Text>Tag</Text>
+            <HStack space={2} alignItems="center">
+              <Icon as={MaterialCommunityIcons} name="tag-outline" />
+              <Text>Tag</Text>
+            </HStack>
           </Pressable>
         </Popover.Content>
       </Popover>

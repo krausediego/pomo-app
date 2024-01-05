@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { useAuth } from '@/contexts';
-import { useGetTagsQuery } from '@/hooks/manager';
+import { useGetProjectsQuery, useGetTagsQuery } from '@/hooks/manager';
 import { Stack } from 'expo-router';
 import { ScrollView, VStack, Skeleton } from 'native-base';
 
@@ -15,15 +15,20 @@ const ManagerProjectAndTasksScreen: React.FC = () => {
   const [typeManager, setTypeManager] = useState<'project' | 'tag'>('project');
   const { user_id } = useAuth();
 
-  const { data, isLoading } = useGetTagsQuery({
+  const { data: tagsData, isLoading: isTagsLoading } = useGetTagsQuery({
     user_id,
   });
+
+  const { data: projectsData, isLoading: isProjectsLoading } =
+    useGetProjectsQuery({
+      user_id,
+    });
 
   const changeType = (type: 'project' | 'tag'): void => {
     setTypeManager(type);
   };
 
-  if (isLoading) {
+  if (isTagsLoading || isProjectsLoading) {
     return (
       <VStack flex={1} bg="white" alignItems="start" pt={8}>
         <Stack.Screen options={{ title: 'Gerenciar Projetos & Tags' }} />
@@ -52,18 +57,29 @@ const ManagerProjectAndTasksScreen: React.FC = () => {
       <ButtonAdd type={typeManager} />
 
       <ScrollView w="full">
-        {typeManager === 'tag' &&
-          data?.map(({ id, tag_name, tag_color }) => {
-            return (
-              <ListProjectOrTags
-                key={id}
-                id={id}
-                type={typeManager}
-                name={tag_name}
-                color={tag_color}
-              />
-            );
-          })}
+        {typeManager === 'tag'
+          ? tagsData?.map(({ id, tag_name, tag_color }) => {
+              return (
+                <ListProjectOrTags
+                  key={id}
+                  id={id}
+                  type={typeManager}
+                  name={tag_name}
+                  color={tag_color}
+                />
+              );
+            })
+          : projectsData?.map(({ id, project_name, project_color }) => {
+              return (
+                <ListProjectOrTags
+                  key={id}
+                  id={id}
+                  type={typeManager}
+                  name={project_name}
+                  color={project_color}
+                />
+              );
+            })}
       </ScrollView>
     </VStack>
   );

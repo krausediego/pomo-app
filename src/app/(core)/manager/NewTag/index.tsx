@@ -48,7 +48,7 @@ const NewTagScreen: React.FC = () => {
           return (
             <ToastContent
               id={id}
-              status="success"
+              status="error"
               title="Erro"
               description={error}
             />

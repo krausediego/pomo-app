@@ -1,7 +1,7 @@
-import { getTagById } from '@/services/manager';
+import { getTagById, GetTagByIdProps } from '@/services/manager';
 import { useQuery } from '@tanstack/react-query';
 
-export const useGetTagByIdQuery = (id: string) =>
+export const useGetTagByIdQuery = ({ id }: GetTagByIdProps) =>
   useQuery({
     queryKey: ['tag', id],
     queryFn: async () => {

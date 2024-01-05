@@ -12,8 +12,6 @@ export const useUpdateTagMutation = () =>
         throw new Error(error?.message);
       }
 
-      console.log('DATA', data);
-
       return data;
     },
     onSuccess: ({ id }) => {

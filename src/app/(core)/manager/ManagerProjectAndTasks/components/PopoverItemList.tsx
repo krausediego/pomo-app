@@ -1,7 +1,10 @@
 import { useState } from 'react';
 
 import { useAuth } from '@/contexts';
-import { useDeleteTagMutation } from '@/hooks/manager';
+import {
+  useDeleteProjectMutation,
+  useDeleteTagMutation,
+} from '@/hooks/manager';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { router } from 'expo-router';
 import {
@@ -29,9 +32,27 @@ export const PopoverItemList: React.FC<PopoverItemListProps> = ({
   const { isOpen, onClose, onOpen } = useDisclose();
   const { user_id } = useAuth();
 
-  const { mutateAsync, isPending } = useDeleteTagMutation();
+  const { mutateAsync: mutateTagAsync, isPending: isTagPending } =
+    useDeleteTagMutation();
+  const { mutateAsync: mutateProjectAsync, isPending: isProjectPending } =
+    useDeleteProjectMutation();
 
-  const handleDeleteProject = async (): Promise<void> => {};
+  const handleDeleteProject = async (): Promise<void> => {
+    let timeClick;
+    if (!clickDelete) {
+      setClickDelete(true);
+      timeClick = setTimeout(() => {
+        setClickDelete(false);
+      }, 5000);
+    } else {
+      if (timeClick) clearTimeout(timeClick);
+      try {
+        mutateProjectAsync({ id, user_id });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
 
   const handleDeleteTag = async (): Promise<void> => {
     let timeClick;
@@ -43,7 +64,7 @@ export const PopoverItemList: React.FC<PopoverItemListProps> = ({
     } else {
       if (timeClick) clearTimeout(timeClick);
       try {
-        mutateAsync({ id, user_id });
+        mutateTagAsync({ id, user_id });
       } catch (error) {
         console.error(error);
       }
@@ -53,7 +74,9 @@ export const PopoverItemList: React.FC<PopoverItemListProps> = ({
   const handleEdit = () => {
     onClose();
     router.push(
-      type === 'project' ? '/manager/NewProject/' : `/manager/NewTag/${id}`,
+      type === 'project'
+        ? `/manager/NewProject/${id}`
+        : `/manager/NewTag/${id}`,
     );
   };
 
@@ -62,7 +85,7 @@ export const PopoverItemList: React.FC<PopoverItemListProps> = ({
       _backdrop={{ bg: 'black' }}
       isOpen={isOpen}
       onOpen={onOpen}
-      onClose={() => !isPending && onClose()}
+      onClose={() => (!isTagPending || !isProjectPending) && onClose()}
       placement="bottom right"
       crossOffset={-15}
       offset={-10}
@@ -82,7 +105,10 @@ export const PopoverItemList: React.FC<PopoverItemListProps> = ({
         );
       }}>
       <Popover.Content bg="white" borderWidth="0" p={2}>
-        <Button isDisabled={isPending} onPress={handleEdit} variant="unstyled">
+        <Button
+          isDisabled={isTagPending || isProjectPending}
+          onPress={handleEdit}
+          variant="unstyled">
           <HStack space={2} alignItems="center">
             <Icon
               as={MaterialCommunityIcons}
@@ -97,7 +123,7 @@ export const PopoverItemList: React.FC<PopoverItemListProps> = ({
         </Button>
         <Divider />
         <Button
-          isLoading={isPending}
+          isLoading={isTagPending || isProjectPending}
           isLoadingText="Excluindo"
           variant="unstyled"
           onPress={type === 'project' ? handleDeleteProject : handleDeleteTag}>
